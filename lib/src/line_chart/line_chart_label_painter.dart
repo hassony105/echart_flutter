@@ -14,7 +14,7 @@ class LineChartXLabelPainter extends CustomPainter {
     required this.range,
     required this.yAxisWidth,
     required this.padding,
-    required this.textScaleFactor,
+    required this.textScale,
   });
 
   /// The label to draw.
@@ -30,7 +30,7 @@ class LineChartXLabelPainter extends CustomPainter {
   final EdgeInsets? padding;
 
   /// The text scale factor.
-  final double textScaleFactor;
+  final TextScaler textScale;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -42,7 +42,7 @@ class LineChartXLabelPainter extends CustomPainter {
       final textPainter = createTextPainter(
         text: labelText.text,
         style: label.style,
-        textScaleFactor: textScaleFactor,
+        textScale: textScale,
       );
       final pixelX = getPixelX(rect, range.ratio(labelText.position));
       if (label.hideOverflowedLabels) {
@@ -81,7 +81,7 @@ class LineChartXLabelPainter extends CustomPainter {
         oldDelegate.range != range ||
         oldDelegate.yAxisWidth != yAxisWidth ||
         oldDelegate.padding != padding ||
-        oldDelegate.textScaleFactor != textScaleFactor;
+        oldDelegate.textScale != textScale;
   }
 }
 
@@ -91,7 +91,7 @@ class LineChartYLabelPainter extends CustomPainter {
   LineChartYLabelPainter({
     required this.label,
     required this.range,
-    required this.textScaleFactor,
+    required this.textScale,
   });
 
   /// The label to draw.
@@ -101,7 +101,7 @@ class LineChartYLabelPainter extends CustomPainter {
   final LineChartYRangeInternal range;
 
   /// The text scale factor.
-  final double textScaleFactor;
+  final TextScaler textScale;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -112,7 +112,7 @@ class LineChartYLabelPainter extends CustomPainter {
       final textPainter = createTextPainter(
         text: labelText.text,
         style: label.style,
-        textScaleFactor: textScaleFactor,
+        textScale: textScale,
       );
       canvas
         ..save()
@@ -134,6 +134,6 @@ class LineChartYLabelPainter extends CustomPainter {
   bool shouldRepaint(covariant LineChartYLabelPainter oldDelegate) {
     return oldDelegate.label != label ||
         oldDelegate.range != range ||
-        oldDelegate.textScaleFactor != textScaleFactor;
+        oldDelegate.textScale != textScale;
   }
 }

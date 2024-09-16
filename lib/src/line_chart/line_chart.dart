@@ -92,11 +92,11 @@ class _Chart extends StatelessWidget {
   Widget build(BuildContext context) {
     final xLabel = data.xAxis.label;
     final yLabel = data.yAxis.label;
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    final textScale = MediaQuery.of(context).textScaler;
     final xAxisHeight = data.xAxis.label?.height ??
-        _calculateLabelMaxOffset(xLabel, textScaleFactor).dy;
+        _calculateLabelMaxOffset(xLabel, textScale).dy;
     final yAxisWidth = data.yAxis.label?.width ??
-        _calculateLabelMaxOffset(yLabel, textScaleFactor).dx;
+        _calculateLabelMaxOffset(yLabel, textScale).dx;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -114,7 +114,7 @@ class _Chart extends StatelessWidget {
                   range: data.xAxis.range,
                   yAxisWidth: yAxisWidth,
                   padding: data.area?.padding,
-                  textScaleFactor: textScaleFactor,
+                  textScale: textScale,
                 ),
                 child: const SizedBox.expand(),
               ),
@@ -131,7 +131,7 @@ class _Chart extends StatelessWidget {
                 painter: LineChartYLabelPainter(
                   label: yLabel,
                   range: data.yAxis.range,
-                  textScaleFactor: textScaleFactor,
+                  textScale: textScale,
                 ),
                 child: const SizedBox.expand(),
               ),
@@ -168,7 +168,7 @@ class _Chart extends StatelessWidget {
 
   static Offset _calculateLabelMaxOffset(
     LineChartLabel? label,
-    double textScaleFactor,
+    TextScaler textScale,
   ) {
     if (label == null || label.texts == null || label.texts!.isEmpty) {
       return Offset.zero;
@@ -177,7 +177,7 @@ class _Chart extends StatelessWidget {
       (labelText) => createTextPainter(
         text: labelText.text,
         style: label.style,
-        textScaleFactor: textScaleFactor,
+        textScale: textScale,
       ),
     );
     final maxWidth =

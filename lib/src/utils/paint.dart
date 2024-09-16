@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 TextPainter createTextPainter({
   required String text,
   required TextStyle? style,
-  required double textScaleFactor,
+  required TextScaler textScale,
 }) =>
     TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScale,
       maxLines: 1,
     )..layout();
 
