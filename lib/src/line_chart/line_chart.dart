@@ -161,7 +161,7 @@ class _Chart extends StatelessWidget {
             yAxisWidth: yAxisWidth,
             positionX: data.xAxis.range.position,
             positionY: data.yAxis.range.position,
-          )
+          ),
       ],
     );
   }

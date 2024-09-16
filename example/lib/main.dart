@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF0C00C5),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
+            backgroundColor: WidgetStateProperty.all<Color>(
               const Color(0xFF0C00C5),
             ),
           ),
