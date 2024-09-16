@@ -22,6 +22,7 @@ class LineChart extends ImplicitlyAnimatedWidget {
     this.tooltip,
     Duration swapAnimationDuration = const Duration(milliseconds: 250),
     Curve swapAnimationCurve = Curves.linear,
+    this.margin = EdgeInsets.zero,
   }) : super(
           key: key,
           duration: swapAnimationDuration,
@@ -34,6 +35,8 @@ class LineChart extends ImplicitlyAnimatedWidget {
   /// The tooltip displayed when tapping the line chart.
   /// When null, the tooltip is disabled.
   final LineChartTooltip? tooltip;
+  ///
+  final EdgeInsets margin;
 
   @override
   AnimatedWidgetBaseState<LineChart> createState() => _LineChartState();
@@ -56,6 +59,7 @@ class _LineChartState extends AnimatedWidgetBaseState<LineChart> {
             tooltip: widget.tooltip,
             width: constraints.maxWidth,
             height: constraints.maxHeight,
+            margin: widget.margin,
           );
         },
       ),
@@ -82,11 +86,13 @@ class _Chart extends StatelessWidget {
     this.tooltip,
     required this.width,
     required this.height,
+    this.margin = EdgeInsets.zero,
   }) : super(key: key);
   final NormalizedLineChartData data;
   final LineChartTooltip? tooltip;
   final double width;
   final double height;
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +152,7 @@ class _Chart extends StatelessWidget {
             child: CustomPaint(
               painter: LineChartPainter(
                 data: data,
+                margin: margin,
               ),
               child: const SizedBox.expand(),
             ),

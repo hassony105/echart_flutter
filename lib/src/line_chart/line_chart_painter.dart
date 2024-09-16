@@ -12,10 +12,14 @@ class LineChartPainter extends CustomPainter {
   /// Creates [LineChartPainter].
   LineChartPainter({
     required this.data,
+    this.margin = EdgeInsets.zero,
   });
 
   /// The normalized data for painting the line chart.
   final NormalizedLineChartData data;
+
+  /// To Apply margin around the chart plot points
+  final EdgeInsets margin;
 
   static final Map<LineChartBarData, List<Offset>> _cachedOffsets = {};
 
@@ -54,7 +58,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     for (final barData in data.lineBarsData) {
-      _drawChart(canvas, rect, barData);
+      _drawChart(canvas, rect, barData, margin);
     }
 
     for (final barData in data.lineBarsData) {
@@ -64,6 +68,7 @@ class LineChartPainter extends CustomPainter {
           rect,
           barData,
           barData.point?.fillColor ?? data.area?.color,
+          margin,
         );
       }
     }
@@ -87,19 +92,30 @@ class LineChartPainter extends CustomPainter {
 
   /// Creates the points for the line chart.
   static List<Offset> createPlotPoints(
-    Rect rect,
-    LineChartBarData lineBarData,
-  ) {
+      Rect rect,
+      LineChartBarData lineBarData,
+      EdgeInsets margin,
+      ) {
     if (_cachedOffsets.containsKey(lineBarData)) {
       return _cachedOffsets[lineBarData]!;
     }
-
     final points = <Offset>[];
-    for (final spot in lineBarData.spots) {
-      final x = getPixelX(rect, spot.x);
-      final y = getPixelY(rect, spot.y);
+    var padding = lineBarData.point?.size ?? 0.0;
+    final adjustedTop = rect.top + margin.top;
+    final adjustedBottom = rect.bottom - margin.bottom;
+    for (var i = 0; i < lineBarData.spots.length; i++) {
+      final spot = lineBarData.spots[i];
+      final x = (i == 0)
+          ? getPixelX(rect, spot.x) + padding + margin.left
+          : (i == lineBarData.spots.length - 1)
+          ? getPixelX(rect, spot.x) - padding - margin.right
+          : getPixelX(rect, spot.x);
+      final y = adjustedTop +
+          ((getPixelY(rect, spot.y) - rect.top) / rect.height) *
+              (adjustedBottom - adjustedTop);
       points.add(Offset(x, y));
     }
+    _cachedOffsets[lineBarData] = points;
     return points;
   }
 
@@ -143,14 +159,14 @@ class LineChartPainter extends CustomPainter {
     }
   }
 
-  static void _drawChart(Canvas canvas, Rect rect, LineChartBarData barData) {
+  static void _drawChart(Canvas canvas, Rect rect, LineChartBarData barData, EdgeInsets margin) {
     final paintStroke = Paint()
       ..color = barData.color
       ..strokeWidth = barData.strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = barData.strokeCap;
 
-    final points = createPlotPoints(rect, barData);
+    final points = createPlotPoints(rect, barData, margin);
 
     if (points.length == 1) {
       canvas.drawCircle(
@@ -178,6 +194,7 @@ class LineChartPainter extends CustomPainter {
     Rect rect,
     LineChartBarData barData,
     Color? color,
+      EdgeInsets margin,
   ) {
     final paintCircle = Paint()
       ..color = color ?? Colors.transparent
@@ -189,7 +206,7 @@ class LineChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = barData.strokeCap;
 
-    final points = createPlotPoints(rect, barData);
+    final points = createPlotPoints(rect, barData, margin);
     for (final point in points) {
       canvas.drawCircle(point, barData.point!.size, paintCircle);
       canvas.drawCircle(point, barData.point!.size, paintBorder);
